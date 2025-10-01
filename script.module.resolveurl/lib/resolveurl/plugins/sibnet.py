@@ -34,7 +34,9 @@ class SibnetResolver(ResolveUrl):
         html = self.net.http_GET(web_url, headers=headers).content
         source = re.search(r'src:\s*"([^"]+)', html)
         if source:
-            return 'https://video.sibnet.ru' + source.group(1) + helpers.append_headers(headers)
+            stream_url = 'https://video.sibnet.ru' + source.group(1)
+            stream_url = self.net.http_GET(stream_url, headers=headers, redirect=False).get_redirect_url()
+            return stream_url + helpers.append_headers(headers)
 
         raise ResolverError('Video not found')
 
